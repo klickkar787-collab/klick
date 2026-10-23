@@ -1,0 +1,6 @@
+{
+  "name": "KlickKar.com Business Platform",
+  "description": "KlickKar.com - Service Marketplace & Business Management with GST Invoicing, WhatsApp, and Telegram Lead System by Mitaksh Infra (OPC) Pvt Ltd",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
