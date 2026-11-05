@@ -203,10 +203,10 @@ Decision:
 
 ## Public chatbot bank-detail output guard — 2026-11-06
 
-- Added `sanitizePublicChatReply` in `src/server/chatSafety.ts`; the Gemini response is checked after internal lead markup is extracted and before the public API returns it.
-- If the reply matches common IFSC-code, labelled bank-account-number, NEFT/RTGS/IMPS beneficiary, or common UPI-handle patterns, the entire public reply is replaced with a safe instruction to obtain verified payment directions through the official helpline or itemized invoice.
+- Added `sanitizePublicChatReply` in `src/server/chatSafety.ts`; the complete Gemini output is checked before lead metadata is parsed, so sensitive details cannot leak through either the visible reply or the returned lead fields.
+- If the output matches common IFSC-code, labelled bank-account-number, NEFT/RTGS/IMPS transfer-reference, labelled UPI/VPA, or common bank-linked UPI-handle patterns, the entire output is replaced with safe payment guidance.
 - The deterministic fallback remains free of bank-transfer details. The system instruction continues to prohibit disclosure, including when the user asks directly or includes details in chat history.
-- Added three tests for IFSC, bank-account/UPI, and preserving ordinary helpline replies. The suite now passes 7/7 tests.
-- Latest GitHub Actions run: `42094383465`, commit `b44d00e8364050fa3d04758fb7f8073522ea4e95`; unit tests, TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
-- Build output on this run: Vite 8.3.6; main JavaScript bundle 952.61 kB (274.64 kB gzip), below the configured 1,000 kB warning threshold.
+- Added five tests covering IFSC, bank-account/UPI, ordinary helpline replies, details hidden inside lead metadata, and labelled UPI/transfer references. The suite now passes 9/9 tests.
+- Latest GitHub Actions run: `42095055106`, commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e`; unit tests (9/9), TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
+- Build output on the prior successful run: Vite 8.3.6; main JavaScript bundle 952.61 kB (274.64 kB gzip), below the configured 1,000 kB warning threshold.
 - The guard is pattern-based, not a guarantee against every possible obfuscation or novel payment identifier. Runtime tests with the real model, adversarial prompts, and browser QA are still required. This change is isolated to the security branch and is not deployed.
