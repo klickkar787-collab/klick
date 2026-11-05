@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,7 +12,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = parseInt(process.env.PORT || '3000', 10);
 
-app.use(express.json());
+// Bound incoming JSON before parsing to limit oversized public API requests.
+app.use(express.json({ limit: '16kb' }));
 
 const apiKey = process.env.GEMINI_API_KEY;
 let aiClient: GoogleGenAI | null = null;
@@ -69,25 +70,52 @@ app.post('/api/chat', async (req: Request, res: Response) => {
   try {
     const { message, history } = req.body;
 
-    if (!message || typeof message !== 'string') {
+    if (typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ error: 'Message is required' });
+    }
+
+    const cleanMessage = message.trim();
+    if (cleanMessage.length > 2000) {
+      return res.status(400).json({ error: 'Message is too long. Please keep it under 2000 characters.' });
+    }
+
+    if (history !== undefined && !Array.isArray(history)) {
+      return res.status(400).json({ error: 'Chat history must be an array' });
+    }
+
+    const recentHistory = Array.isArray(history) ? history.slice(-8) : [];
+    let historyCharacters = 0;
+    for (const item of recentHistory) {
+      if (
+        !item ||
+        typeof item !== 'object' ||
+        (item.role !== 'user' && item.role !== 'model') ||
+        typeof item.text !== 'string' ||
+        !item.text.trim() ||
+        item.text.length > 1500
+      ) {
+        return res.status(400).json({ error: 'Chat history contains an invalid message' });
+      }
+      historyCharacters += item.text.length;
+    }
+
+    if (historyCharacters > 8000) {
+      return res.status(400).json({ error: 'Chat history is too long. Please start a new chat.' });
     }
 
     if (aiClient) {
       const contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [];
 
-      if (Array.isArray(history)) {
-        for (const item of history.slice(-8)) {
-          contents.push({
-            role: item.role === 'user' ? 'user' : 'model',
-            parts: [{ text: item.text }],
-          });
-        }
+      for (const item of recentHistory) {
+        contents.push({
+          role: item.role,
+          parts: [{ text: item.text.trim() }],
+        });
       }
 
       contents.push({
         role: 'user',
-        parts: [{ text: message }],
+        parts: [{ text: cleanMessage }],
       });
 
       const response = await aiClient.models.generateContent({
@@ -120,7 +148,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       });
     } else {
       // Intelligent Rule-Based Fallback when GEMINI_API_KEY is not yet populated
-      const lower = message.toLowerCase();
+      const lower = cleanMessage.toLowerCase();
       let reply = '';
       let extractedLead: any = null;
 
@@ -141,7 +169,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       }
 
       // Check for phone number in user message to capture lead
-      const phoneMatch = message.match(/(\+?91[\s-]?)?[6-9]\d{9}/);
+      const phoneMatch = cleanMessage.match(/(\+?91[\s-]?)?[6-9]\d{9}/);
       if (phoneMatch) {
         extractedLead = {
           name: 'Direct Web Chat Lead',
@@ -164,6 +192,21 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       reply: 'Namaste! We are experiencing a brief connection delay. Please feel free to call our direct engineering desk at +91 96546 10640 or WhatsApp us for immediate assistance.',
     });
   }
+});
+
+// Return consistent JSON errors for malformed or oversized API request bodies.
+app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) return next(err);
+
+  if (err?.type === 'entity.too.large') {
+    return res.status(413).json({ error: 'Request body is too large' });
+  }
+
+  if (err instanceof SyntaxError && 'body' in err) {
+    return res.status(400).json({ error: 'Invalid JSON request body' });
+  }
+
+  return next(err);
 });
 
 // Vite middleware in dev or static files in production
