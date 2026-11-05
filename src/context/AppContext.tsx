@@ -1101,6 +1101,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const resetAllData = () => {
+    const confirmed = window.confirm(
+      'Reset KlickKar demo data to its initial sample state? This will replace locally saved KlickKar users, bookings, quotations, invoices, leads, payments, services, offers, site content, AI sessions, and settings in this browser. Export a backup first if you need to keep any records. Other websites’ browser storage will not be touched.'
+    );
+
+    if (!confirmed) return;
+
     setUsers(INITIAL_USERS);
     setCurrentUser(null);
     setRole('customer');
@@ -1111,9 +1117,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setQuotations(INITIAL_QUOTATIONS);
     setInvoices(INITIAL_INVOICES);
     setLeads(INITIAL_TELEGRAM_LEADS);
+    setPayments(INITIAL_PAYMENTS);
     setAiSessions(INITIAL_AI_SESSIONS);
     setSettings(OFFICIAL_COMPANY_DETAILS);
-    localStorage.clear();
+
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      localStorage.removeItem(key);
+    });
   };
 
   return (
