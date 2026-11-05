@@ -165,7 +165,7 @@ interface AppContextType {
 
   // Operations
   addBooking: (
-    booking: Omit<Booking, 'id' | 'bookingNumber' | 'createdAt' | 'status' | 'paymentStatus' | 'paidAmount' | 'termsAccepted'> & {
+    booking: Omit<Booking, 'id' | 'bookingNumber' | 'createdAt' | 'status' | 'paymentStatus' | 'paidAmount' | 'termsAccepted' | 'bookingType'> & {
       bookingType?: BookingType;
       paymentStatus?: PaymentStatus;
       paidAmount?: number;
@@ -607,7 +607,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Add Booking
   const addBooking = (
-    bookingData: Omit<Booking, 'id' | 'bookingNumber' | 'createdAt' | 'status' | 'paymentStatus' | 'paidAmount' | 'termsAccepted'> & {
+    bookingData: Omit<Booking, 'id' | 'bookingNumber' | 'createdAt' | 'status' | 'paymentStatus' | 'paidAmount' | 'termsAccepted' | 'bookingType'> & {
       bookingType?: BookingType;
       paymentStatus?: PaymentStatus;
       paidAmount?: number;
@@ -905,7 +905,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       totalIgst,
       grandTotal,
       amountInWords: numberToIndianWords(grandTotal),
-      paymentStatus: customData?.paymentStatus || 'Unpaid',
+      paymentStatus: customData?.paymentStatus || 'Pending',
       paymentMode: customData?.paymentMode,
       paymentDate: customData?.paymentDate,
       notes: customData?.notes || 'Thank you for your business. Subject to Noida jurisdiction.',
@@ -1162,6 +1162,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         quotations,
         invoices,
         leads,
+        payments,
         settings,
         selectedInvoice,
         setSelectedInvoice,
@@ -1173,6 +1174,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         openBookingForService,
         isTelegramModalOpen,
         setIsTelegramModalOpen,
+        activePaymentModal,
+        openPaymentModal,
+        closePaymentModal,
+        activeReceipt,
+        setActiveReceipt,
+        recordPayment,
+        updatePaymentStatus,
+        updatePaymentTerms,
+        isLegalModalOpen,
+        setIsLegalModalOpen,
+        legalModalTab,
+        setLegalModalTab,
+        openLegalModal,
         addBooking,
         updateBookingStatus,
         assignProviderToBooking,
