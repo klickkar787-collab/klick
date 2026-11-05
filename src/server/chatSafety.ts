@@ -47,3 +47,25 @@ export function extractLeadFromReply(rawText: string): {
 
   return { reply, extractedLead };
 }
+
+
+/**
+ * Public chatbot replies must never expose bank-transfer credentials.
+ * If a response resembles an account/IFSC/UPI instruction, replace the
+ * complete reply rather than attempting partial redaction.
+ */
+export function sanitizePublicChatReply(reply: string): string {
+  const bankDetailPatterns = [
+    /\\bIFSC\\b\\s*(?:code)?\\s*[:#-]?\\s*[A-Z]{4}0[A-Z0-9]{6}\\b/i,
+    /\\b(?:bank\\s*)?(?:account|a\\/c)\\s*(?:number|no\\.?|#)?\\s*[:#-]?\\s*[0-9][0-9\\s-]{7,20}\\b/i,
+    /\\b(?:NEFT|RTGS|IMPS)\\b.{0,80}\\b(?:account|a\\/c|IFSC|beneficiary)\\b/i,
+    /\\b[\\w.-]{2,}@(?:okaxis|okhdfcbank|oksbi|okicici|ybl|ibl|paytm|upi|apl|axl)\\b/i,
+    /\\b(?:beneficiary|bank transfer details|payment credentials)\\b.{0,100}\\b(?:\\d{8,}|IFSC|UPI)\\b/i,
+  ];
+
+  if (bankDetailPatterns.some((pattern) => pattern.test(reply))) {
+    return 'For your security, I cannot provide bank-transfer details in this chat. Please request verified payment instructions through the official KlickKar helpline or an official itemized invoice.';
+  }
+
+  return reply;
+}
