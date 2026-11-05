@@ -79,7 +79,8 @@ export const AIChatbotWidget: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text,
-          history: newMessages.slice(0, -1).map((m) => ({
+          // Keep the request aligned with the server's bounded recent-history policy.
+          history: newMessages.slice(0, -1).slice(-8).map((m) => ({
             role: m.role,
             text: m.text,
           })),
@@ -263,6 +264,7 @@ export const AIChatbotWidget: React.FC = () => {
           <div className="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
             <input
               type="text"
+              maxLength={2000}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
