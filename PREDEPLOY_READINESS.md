@@ -48,7 +48,7 @@ This checklist is intentionally conservative. A green frontend build is not proo
 
 - Source-level checks have been performed for the recent chatbot request bounds and payment-disclosure changes.
 - A GitHub Actions workflow has been added to run dependency installation, the repository's TypeScript check, and production build on the isolated security branch and on pull requests targeting main.
-- [x] Latest TypeScript check and production Vite build passed on commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e` (workflow run `42095055106`).
+- [x] Latest TypeScript check and production Vite build passed on commit `7c26513213872455bf7e64e2017888658235de8d` (workflow run `42095315646`).
 - [x] Nine chatbot safety unit tests passed on that commit (0 failures), including IFSC, bank-account, UPI, transfer-reference, lead-metadata, and ordinary helpline reply cases.
 - [x] Dependency installation reported 0 known vulnerabilities in the resolved dependency tree at that run.
 - Earlier successful build output showed the main JavaScript bundle at 952.49 kB (274.58 kB gzip), below the configured 1,000 kB warning threshold but close enough to monitor.
