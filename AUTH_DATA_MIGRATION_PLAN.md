@@ -113,3 +113,39 @@ The context currently exposes synchronous methods for login, registration, user 
 - The Admin Dashboard header renders bank-account information from the browser settings object. Before treating this site as public production software, confirm which payment details are intentionally public. Any credential-like integration token must never be rendered or stored there.
 
 Implementation implication: the migration must change the data-delivery boundary, not merely replace the login form. Customer and provider APIs should return only records authorized for that session; the browser must never download the full shared dataset and rely on filtering to hide other people's information.
+
+
+## 8. Provider-neutral PostgreSQL preparation (not applied)
+
+This is a design baseline for the approved development/testing preparation only. It does not create a database, connect to Neon, apply a migration, or authorize production use.
+
+### Proposed relational domains
+
+- `user_accounts`: stable user ID, normalized unique email, name/contact/company fields, role, account status, timestamps, and **password_hash only**. Never store a `password` field in a database response DTO or browser state.
+- `user_sessions`: user ID, hash of a high-entropy session token, creation/expiry/revocation timestamps, and limited session metadata. Store only the token hash; send the raw token only in an HttpOnly, Secure, SameSite cookie.
+- `password_reset_tokens`: user ID, hashed one-time token, expiry, used timestamp, and creation timestamp.
+- `service_providers`: provider profile and specialization, linked to a provider-role user account. Do not infer a provider identity from a client-provided ID.
+- `services` and `offers`: CMS catalog records with validated JSON arrays only where the current UI expects arrays.
+- `bookings`: customer owner user ID, optional assigned provider profile ID, service reference, status, dates, payment summary, and customer-facing snapshot fields needed for historical records.
+- `quotations` and `quotation_items`: quote header, booking/customer ownership, tax totals, status, and normalized line items.
+- `invoices` and `invoice_items`: invoice header, booking/quotation references, tax totals, payment summary, and normalized line items.
+- `payment_records`: payment/receipt references, linked booking/quote/invoice, amount, mode, status, transaction reference, and actor. Add idempotency protection before accepting any future online payment callbacks.
+- `leads` and `lead_messages`: lead details, status, linked booking, and conversation history. Restrict staff access and apply a retention policy to phone numbers and message content.
+- `ai_chat_sessions` and `ai_chat_messages`: separate session/message records with a documented retention policy; avoid storing unnecessary personal data.
+- `site_content`, `app_settings`, and `audit_log`: controlled CMS/configuration records and immutable records of sensitive administrative actions.
+
+### Required data-boundary decisions
+
+- Split `UserAccount` into a safe browser-facing user DTO (no password or hash) and a server-only credential record (`password_hash`).
+- Split `AppSettings`: public website settings, restricted administrative settings, and server-only integration secrets. Never persist a real Telegram/Gemini token in browser settings or localStorage.
+- Bank-transfer details currently appear in the frontend company-settings/payment/invoice workflow. The public chatbot is prohibited from disclosing them, but the intended visibility in customer-facing payment/invoice screens remains a separate owner decision; do not silently change that workflow.
+- Add explicit `customer_user_id` and provider ownership references. Existing demo/live records must be reconciled with verified account ownership during a reviewed migration; do not auto-assign ambiguous records using a loose email-or-phone match.
+- Keep provider and customer APIs scoped in SQL queries by the authenticated session identity. Do not fetch a global collection and filter it in React.
+- Use database transactions for related booking/quote/invoice/payment changes and write audit events for role, status, payment, and settings changes.
+
+### Provisioning and validation gate
+
+- [ ] User approval to create a Neon Free development/testing project is still required before provisioning.
+- [ ] After approval, keep the connection string in the provider's secret manager only; never paste it into chat or commit it.
+- [ ] Validate schema/migrations against a disposable test database before any live-data migration.
+- [ ] Production database choice, backup/restore policy, and production configuration remain unapproved and out of scope.
