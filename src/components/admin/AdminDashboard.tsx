@@ -208,7 +208,7 @@ export const AdminDashboard: React.FC = () => {
     .reduce((acc, inv) => acc + inv.grandTotal, 0);
 
   const pendingRevenue = invoices
-    .filter((inv) => inv.paymentStatus !== 'Paid' && inv.paymentStatus !== 'Cancelled')
+    .filter((inv) => inv.paymentStatus !== 'Paid' && inv.paymentStatus !== 'Refunded')
     .reduce((acc, inv) => acc + inv.grandTotal, 0);
 
   const activeBookingsCount = bookings.filter(
@@ -359,7 +359,7 @@ export const AdminDashboard: React.FC = () => {
       customerGstin: newInvGstin,
       placeOfSupply: newInvPlaceOfSupply,
       items,
-      paymentStatus: 'Unpaid',
+      paymentStatus: 'Pending',
     });
 
     setShowCreateInvoiceModal(false);
@@ -1137,7 +1137,7 @@ export const AdminDashboard: React.FC = () => {
 
                   {inv.paymentStatus !== 'Paid' && (
                     <button
-                      onClick={() => updateInvoicePayment(inv.id, 'Paid', 'Bank Transfer (NEFT/RTGS)')}
+                      onClick={() => updateInvoicePayment(inv.id, 'Paid', 'Bank Transfer')}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-2 rounded-xl transition-all cursor-pointer"
                       title="Mark as Paid"
                     >
