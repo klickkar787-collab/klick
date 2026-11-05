@@ -48,8 +48,8 @@ This checklist is intentionally conservative. A green frontend build is not proo
 
 - Source-level checks have been performed for the recent chatbot request bounds and payment-disclosure changes.
 - A GitHub Actions workflow has been added to run dependency installation, the repository's TypeScript check, and production build on the isolated security branch and on pull requests targeting main.
-- [x] Latest TypeScript check and production Vite build passed on commit `7c26513213872455bf7e64e2017888658235de8d` (workflow run `42095315646`).
-- [x] Nine chatbot safety unit tests passed on that commit (0 failures), including IFSC, bank-account, UPI, transfer-reference, lead-metadata, and ordinary helpline reply cases.
+- [x] Latest TypeScript check and production Vite build passed on commit `61850451e1984642f91c99c508784b9e7f1601e9` (workflow run `42095951633`).
+- [x] Nine chatbot safety unit tests plus one Express chat API integration test passed on commit `61850451e1984642f91c99c508784b9e7f1601e9` (10 total, 0 failures).
 - [x] Dependency installation reported 0 known vulnerabilities in the resolved dependency tree at that run.
 - Earlier successful build output showed the main JavaScript bundle at 952.49 kB (274.58 kB gzip), below the configured 1,000 kB warning threshold but close enough to monitor.
 - CI actions were upgraded to current Node 24-runtime major releases to remove the prior Node 20 action-runtime deprecation warning.
@@ -70,3 +70,10 @@ This checklist is intentionally conservative. A green frontend build is not proo
 - [x] Nine unit tests, TypeScript check, and production build passed on commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e` (workflow run `42095055106`).
 - [ ] Pattern-based output checks are not exhaustive. Test the live Gemini and fallback paths with adversarial prompts in a controlled environment before release.
 - [ ] Full browser QA and the P0 authentication, authorization, demo-data, and durable-persistence blockers remain open.
+
+
+## Chat API integration tests — 2026-11-06
+
+- [x] Added an Express HTTP integration test for the no-Gemini fallback route and request validation.
+- [x] 10 tests passed (9 chatbot safety unit tests + 1 API integration test), TypeScript check passed, and production build passed on commit `61850451e1984642f91c99c508784b9e7f1601e9` (workflow run `42095951633`).
+- [ ] Real Gemini calls, hostile prompt tests, full browser QA, auth/RBAC, durable persistence, and production backup/restore remain unverified.
