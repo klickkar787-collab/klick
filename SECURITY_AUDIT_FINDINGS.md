@@ -207,6 +207,6 @@ Decision:
 - If the output matches common IFSC-code, labelled bank-account-number, NEFT/RTGS/IMPS transfer-reference, labelled UPI/VPA, or common bank-linked UPI-handle patterns, the entire output is replaced with safe payment guidance.
 - The deterministic fallback remains free of bank-transfer details. The system instruction continues to prohibit disclosure, including when the user asks directly or includes details in chat history.
 - Added five tests covering IFSC, bank-account/UPI, ordinary helpline replies, details hidden inside lead metadata, and labelled UPI/transfer references. The suite now passes 9/9 tests.
-- Latest GitHub Actions run: `42095055106`, commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e`; unit tests (9/9), TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
+- Latest GitHub Actions run: `42095315646`, commit `7c26513213872455bf7e64e2017888658235de8d`; unit tests (9/9), TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
 - Build output on the prior successful run: Vite 8.3.6; main JavaScript bundle 952.61 kB (274.64 kB gzip), below the configured 1,000 kB warning threshold.
 - The guard is pattern-based, not a guarantee against every possible obfuscation or novel payment identifier. Runtime tests with the real model, adversarial prompts, and browser QA are still required. This change is isolated to the security branch and is not deployed.
