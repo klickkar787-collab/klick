@@ -28,7 +28,7 @@ export const OFFICIAL_COMPANY_DETAILS: AppSettings = {
   },
   telegram: {
     enabled: true,
-    botToken: '7829104821:AAH-kkBot_ProductionToken_2026',
+    botToken: '',
     botUsername: 'KlickKar_Support_Bot',
     autoReply: true,
   },
