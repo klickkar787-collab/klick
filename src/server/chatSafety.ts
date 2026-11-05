@@ -56,11 +56,11 @@ export function extractLeadFromReply(rawText: string): {
  */
 export function sanitizePublicChatReply(reply: string): string {
   const bankDetailPatterns = [
-    /\\bIFSC\\b\\s*(?:code)?\\s*[:#-]?\\s*[A-Z]{4}0[A-Z0-9]{6}\\b/i,
-    /\\b(?:bank\\s*)?(?:account|a\\/c)\\s*(?:number|no\\.?|#)?\\s*[:#-]?\\s*[0-9][0-9\\s-]{7,20}\\b/i,
-    /\\b(?:NEFT|RTGS|IMPS)\\b.{0,80}\\b(?:account|a\\/c|IFSC|beneficiary)\\b/i,
-    /\\b[\\w.-]{2,}@(?:okaxis|okhdfcbank|oksbi|okicici|ybl|ibl|paytm|upi|apl|axl)\\b/i,
-    /\\b(?:beneficiary|bank transfer details|payment credentials)\\b.{0,100}\\b(?:\\d{8,}|IFSC|UPI)\\b/i,
+    /\bIFSC\b\s*(?:code)?\s*[:#-]?\s*[A-Z]{4}0[A-Z0-9]{6}\b/i,
+    /\b(?:bank\s*)?(?:account|a\/c)\s*(?:number|no\.?|#)?\s*[:#-]?\s*[0-9][0-9\s-]{7,20}\b/i,
+    /\b(?:NEFT|RTGS|IMPS)\b.{0,80}\b(?:account|a\/c|IFSC|beneficiary)\b/i,
+    /\b[\w.-]{2,}@(?:okaxis|okhdfcbank|oksbi|okicici|ybl|ibl|paytm|upi|apl|axl)\b/i,
+    /\b(?:beneficiary|bank transfer details|payment credentials)\b.{0,100}\b(?:\d{8,}|IFSC|UPI)\b/i,
   ];
 
   if (bankDetailPatterns.some((pattern) => pattern.test(reply))) {
