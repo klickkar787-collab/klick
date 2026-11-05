@@ -163,5 +163,9 @@ Decision:
 - We have not yet verified the exact client-IP value observed by this service, so no per-IP rate limiter or proxy-trust setting has been added. A wrong configuration could make every visitor share one limit or allow spoofed IP values to bypass the limit.
 - Next safe step is to validate the client-IP source in a controlled non-production environment, then add a limiter with a shared store if the service ever runs multiple instances. The current Render service has one instance, but the free instance can restart and in-memory counters would reset.
 
-### Payment disclosure still requires owner confirmation
-- The public chatbot's system prompt and fallback response include company payment details. This could be intentional customer payment guidance, so it has not been removed or changed without confirmation that the details should no longer be public.
+### Payment disclosure — owner decision and branch remediation
+- Owner explicitly confirmed that bank-transfer details must **not** be disclosed by the public chatbot.
+- On this isolated branch, the bank-detail line has been removed from the AI system instruction and the prompt now explicitly prohibits disclosing or confirming bank account numbers, IFSC codes, payment credentials, or other bank-transfer details, including details appearing in chat history.
+- The GST/invoice fallback no longer includes bank details. It directs customers to request verified payment instructions through the official helpline or an official itemized invoice.
+- Source review verified that the bank details are absent from the system-instruction block and the old fallback wording is absent.
+- This is a source-level change only. Build, runtime chatbot tests (including Gemini and fallback paths), and browser QA are still pending. It is not deployed.
