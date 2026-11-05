@@ -78,3 +78,25 @@ Do not replace the current synchronous client login with a temporary in-memory s
 ## Approval boundary
 
 Work may continue on this isolated branch. No merge, pull request, production deploy, Render environment update, DNS change, or destructive migration without explicit approval after risks and rollback steps are explained.
+
+
+## Additional verified findings — data lifecycle
+
+### Confirmed: 13 localStorage data keys
+The current `AppContext.tsx` reads/writes 13 named application keys:
+- users and current authenticated user
+- role
+- services, offers, and site content
+- bookings, quotations, invoices, leads, AI sessions, payments, and settings
+
+These keys are not a shared database and are not protected from browser-side inspection or modification.
+
+### High: destructive Reset Data action
+- The Admin Dashboard exposes a `Reset Data` button that calls `resetAllData`.
+- `resetAllData` calls `localStorage.clear()`, which clears every localStorage key for the site origin—not just KlickKar's named application keys.
+- The button has no confirmation step in the reviewed code.
+- This can delete unrelated same-origin browser data as well as all locally stored KlickKar records. It does not reset the payments React state in the same function, so its reset behavior is also inconsistent until reload.
+- Before production use, this action must be disabled or redesigned as a guarded demo-only reset. If retained, it must target only explicit KlickKar keys, clearly warn about irreversible local data loss, require deliberate confirmation, and include a verified export/restore workflow. Never invoke it on production customer data.
+
+### Implementation note
+A safe migration must preserve existing local browser data before any change to storage initialization or reset behavior. Do not run `localStorage.clear()` or any destructive migration against the live site during remediation.
