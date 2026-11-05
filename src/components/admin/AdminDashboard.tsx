@@ -415,9 +415,9 @@ export const AdminDashboard: React.FC = () => {
             <button
               onClick={resetAllData}
               className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2.5 rounded-xl border border-slate-700 transition-all cursor-pointer"
-              title="Reset all dummy data back to seed state"
+              title="Reset this browser's KlickKar demo data to its initial sample state; confirmation required"
             >
-              Reset Data
+              Reset Demo Data
             </button>
           </div>
         </div>
