@@ -136,8 +136,10 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       const rawText = response.text || '';
       
       // Check for lead extraction
-      const { reply: cleanedText, extractedLead } = extractLeadFromReply(rawText);
-      const safeReply = sanitizePublicChatReply(cleanedText);
+      // Sanitize the complete model output before parsing lead metadata so
+      // payment details cannot leak through either the visible reply or JSON fields.
+      const safeRawText = sanitizePublicChatReply(rawText);
+      const { reply: safeReply, extractedLead } = extractLeadFromReply(safeRawText);
 
       return res.json({
         reply: safeReply,
