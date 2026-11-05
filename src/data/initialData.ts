@@ -832,7 +832,7 @@ export const INITIAL_INVOICES: GSTInvoice[] = [
     grandTotal: 424800,
     amountInWords: 'Four Lakh Twenty-Four Thousand Eight Hundred Rupees Only',
     paymentStatus: 'Partially Paid',
-    paymentMode: 'Bank Transfer (NEFT/RTGS)',
+    paymentMode: 'Bank Transfer',
     paymentDate: '2026-10-21',
     notes: 'Advance 50% (₹2,12,400) received via Kotak NEFT Ref: KKBK26102149102. Balance payable on delivery.',
   },
