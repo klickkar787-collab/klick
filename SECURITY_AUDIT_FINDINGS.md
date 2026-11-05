@@ -188,3 +188,14 @@ Decision:
 - Build output: Vite 8.3.6; main JS bundle 952.49 kB (274.58 kB gzip), under the configured 1,000 kB warning threshold.
 - npm still emitted a deprecated transitive dependency warning and warnings that install scripts for five packages were not covered by npm's `allowScripts` policy. Build success does not replace runtime tests of Gemini/other integrations.
 - These results validate compilation and bundling only. The P0 authentication, authorization, client-exposed demo records, and durable database persistence blockers remain open; no deployment is authorized.
+
+
+## Chatbot lead-data validation and unit tests — 2026-11-06
+
+- Moved model-generated lead-tag parsing into `src/server/chatSafety.ts`, a pure helper.
+- The helper accepts only an object, copies only the five allowed lead fields, requires string values, trims them, applies field-specific length limits, and strips internal lead-capture markup even when the JSON is malformed or not an object.
+- Added four Node test-runner cases covering allowed fields/trim, length limits, malformed and non-object payloads, and ordinary replies with no marker.
+- The chatbot widget now clips each historical entry to the server's 1,500-character limit and drops oldest history entries until the aggregate is at most 8,000 characters, while retaining at most eight entries.
+- GitHub Actions workflow now runs unit tests, TypeScript check, and production build; actions were updated to current Node 24-runtime releases.
+- Latest successful run: `42093513575`, commit `962e7a9cb50d66fa860082353e308198f727a1e6`; unit tests (4/4), TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
+- This does not constitute a full API integration or browser test. The P0 authentication, authorization, public demo data, and database persistence blockers remain open.
