@@ -176,3 +176,15 @@ Decision:
 - Source review verified that the bank details are absent from the system-instruction block and the old fallback wording is absent.
 - This is a source-level change only. Build, runtime chatbot tests (including Gemini and fallback paths), and browser QA are still pending. It is not deployed.
 - Source review also found that the existing Payment Modal and GST Invoice UI read bank details from company settings and render them as part of the payment/invoice workflow. Those screens were not changed because the owner's explicit decision concerned public chatbot disclosure; changing them could alter the existing payment flow. Treat any broader removal from payment screens as a separate owner decision.
+
+
+## CI verification and type fixes — 2026-11-06
+
+- Added `.github/workflows/predeploy-checks.yml` to run dependency installation, `npm run lint` (TypeScript `tsc --noEmit`), and `npm run build` on the isolated security branch and pull requests to main.
+- First TypeScript run failed with errors in invoice/payment status literals, bank-transfer payment-mode literals, `addBooking`'s optional `bookingType` type, and the AppContext provider value omitting properties already declared in its interface.
+- Fixed those type mismatches: use `Pending` instead of unsupported `Unpaid`, use the supported `Bank Transfer` payment mode, exclude `Refunded` from pending-revenue totals instead of comparing an invoice payment status to booking status `Cancelled`, omit `bookingType` before making it optional in the add-booking input, and expose the already-implemented payment/legal context members from the provider value.
+- Admin user-create and password-reset form inputs now use password masking and `autocomplete=new-password`.
+- Successful GitHub Actions run: `42092514485`, commit `0a9f25bbcab8a0ce616add6783e0d4828cd136fe`. Both TypeScript check and production build passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
+- Build output: Vite 8.3.6; main JS bundle 952.49 kB (274.58 kB gzip), under the configured 1,000 kB warning threshold.
+- npm still emitted a deprecated transitive dependency warning and warnings that install scripts for five packages were not covered by npm's `allowScripts` policy. Build success does not replace runtime tests of Gemini/other integrations.
+- These results validate compilation and bundling only. The P0 authentication, authorization, client-exposed demo records, and durable database persistence blockers remain open; no deployment is authorized.
