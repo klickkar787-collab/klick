@@ -1788,7 +1788,8 @@ export const AdminDashboard: React.FC = () => {
               <div>
                 <label className="block font-bold text-slate-700 uppercase mb-1">Password *</label>
                 <input
-                  type="text"
+                  type="password"
+                  autoComplete="new-password"
                   value={newUserPass}
                   onChange={(e) => setNewUserPass(e.target.value)}
                   required
@@ -1864,7 +1865,8 @@ export const AdminDashboard: React.FC = () => {
                   New Password
                 </label>
                 <input
-                  type="text"
+                  type="password"
+                  autoComplete="new-password"
                   required
                   value={newPassVal}
                   onChange={(e) => setNewPassVal(e.target.value)}
