@@ -47,8 +47,13 @@ This checklist is intentionally conservative. A green frontend build is not proo
 ## Current verification state
 
 - Source-level checks have been performed for the recent chatbot request bounds and payment-disclosure changes.
-- A GitHub Actions workflow has been added to run the repository's TypeScript check and production build on the isolated security branch and on pull requests targeting main.
-- No successful workflow result has yet been observed for this branch.
+- A GitHub Actions workflow has been added to run dependency installation, the repository's TypeScript check, and production build on the isolated security branch and on pull requests targeting main.
+- [x] TypeScript check passed on commit `0a9f25bbcab8a0ce616add6783e0d4828cd136fe` (workflow run `42092514485`).
+- [x] Production Vite build passed on the same commit. Vite reported the main JavaScript bundle at 952.49 kB (274.58 kB gzip); it is below the configured 1,000 kB warning threshold but close enough to monitor.
+- [x] Dependency installation reported 0 known vulnerabilities in the resolved dependency tree at that run.
+- The initial CI run exposed TypeScript errors in invoice/payment status values, bank-transfer enum usage, optional booking type declarations, and missing AppContext provider values. These were corrected, and the subsequent TypeScript check passed.
+- Admin create-user and reset-password inputs now mask password text. This is only a UI shoulder-surfing improvement; it does not fix plaintext password storage or client-side authentication.
+- npm emitted warnings for a deprecated transitive package and install scripts not covered by npm's allowScripts policy. The build passed, but runtime verification of affected integrations remains pending.
 - No full browser QA, API integration test suite, database migration test, or restore drill has been completed.
 - Render remains configured to deploy from `main`; this branch is not the live deployment source.
 
