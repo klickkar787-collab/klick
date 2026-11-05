@@ -137,7 +137,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       // Check for lead extraction
       let extractedLead: Record<string, string> | null = null;
       let cleanedText = rawText;
-      const leadMatch = rawText.match(/<<<LEAD_CAPTURED:([\\s\\S]*?)>>>/);
+      const leadMatch = rawText.match(/<<<LEAD_CAPTURED:([\s\S]*?)>>>/);
       if (leadMatch) {
         // Never trust model-generated lead JSON without validating its shape and size.
         try {
@@ -165,7 +165,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
         }
 
         // Internal lead-capture markup must never appear in the customer-facing reply.
-        cleanedText = rawText.replace(/<<<LEAD_CAPTURED:[\\s\\S]*?>>>/, '').trim();
+        cleanedText = rawText.replace(/<<<LEAD_CAPTURED:[\s\S]*?>>>/, '').trim();
       }
 
       return res.json({
