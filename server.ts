@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.disable('x-powered-by');
 const port = parseInt(process.env.PORT || '3000', 10);
 
 // Bound incoming JSON before parsing to limit oversized public API requests.
@@ -68,8 +69,12 @@ Key Behavior Guidelines:
 // AI Chatbot Route
 app.post('/api/chat', async (req: Request, res: Response) => {
   try {
-    const { message, history } = req.body;
+    const body = req.body;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return res.status(400).json({ error: 'A JSON object is required' });
+    }
 
+    const { message, history } = body;
     if (typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ error: 'Message is required' });
     }
