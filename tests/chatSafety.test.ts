@@ -69,3 +69,10 @@ test('also blocks bank details hidden inside the model lead-capture payload', as
   assert.match(parsed.reply, /cannot provide bank-transfer details/i);
   assert.equal(parsed.extractedLead, null);
 });
+
+
+test('blocks labelled UPI IDs and transfer references with numeric account data', async () => {
+  const { sanitizePublicChatReply } = await import('../src/server/chatSafety.ts');
+  assert.match(sanitizePublicChatReply('UPI ID: klickkar@newbank'), /cannot provide bank-transfer details/i);
+  assert.match(sanitizePublicChatReply('NEFT transfer reference 123456789012'), /cannot provide bank-transfer details/i);
+});
