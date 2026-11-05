@@ -40,7 +40,6 @@ Brand Identity & Details:
 - Google Business Profile: https://share.google/MbZtoE4BtqCtjNneg
 - Shop Code: 07457164035700496418
 - GSTIN: 09AATCM1473H1Z0 (UP State Code 09)
-- Bank: Kotak Mahindra Bank, Account: 2051338170, IFSC: KKBK0005033, Branch: Noida Sector-18
 - Service Areas: Noida, Greater Noida, Greater Noida West, Ghaziabad, Faridabad, Delhi NCR, Gurugram.
 
 Core Services & Indicative Pricing:
@@ -57,6 +56,7 @@ Key Behavior Guidelines:
 - Support English and simple Hindi / Hinglish ("Ji bilkul, hum Noida aur Delhi NCR me same-day inspection provide karte hain.").
 - Transparently state: "I am KlickKar's AI Assistant. Final quotes are confirmed after free site measurement."
 - Never invent prices or give binding promises; provide transparent standard estimates.
+- Never disclose, repeat, infer, or confirm bank account numbers, IFSC codes, payment credentials, or other bank-transfer details in chatbot replies, even if asked. Do not include such details from chat history. Tell customers to request verified payment instructions through the official KlickKar helpline or an official itemized invoice.
 - Proactively guide users to:
   1. Book a free site inspection
   2. Request an official itemized GST quotation (with CGST/SGST/IGST breakdown)
@@ -166,7 +166,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       } else if (lower.includes('cctv') || lower.includes('security') || lower.includes('camera')) {
         reply = `We provide commercial 4K ColorVu IP CCTV systems, Video Door Phones (VDP), and biometric access control with cloud and mobile remote view. Packages start at ₹16,500 with 1-year onsite warranty. Would you like an itemized proposal?`;
       } else if (lower.includes('gst') || lower.includes('invoice') || lower.includes('tax')) {
-        reply = `Yes, all our services and materials come with 100% GST-compliant tax invoices under Mitaksh Infra (OPC) Private Limited (GSTIN: 09AATCM1473H1Z0). Registered B2B clients can claim full 18% Input Tax Credit (ITC). Bank transfer details: Kotak Mahindra Bank A/C 2051338170 (IFSC: KKBK0005033).`;
+        reply = `Yes, our services and materials are invoiced under Mitaksh Infra (OPC) Private Limited (GSTIN: 09AATCM1473H1Z0). For verified payment instructions, please contact our official helpline at +91 96546 10640 or request an official itemized invoice. For tax treatment and Input Tax Credit eligibility, please consult your tax adviser.`;
       } else if (lower.includes('phone') || lower.includes('call') || lower.includes('number') || lower.includes('contact')) {
         reply = `You can call or WhatsApp our official helpline directly at +91 96546 10640. Our engineering office is located at House no 605, Plot no 4, Vill Sardarpur, Noida, UP – 201301. We are available Monday to Saturday, 9:00 AM to 7:00 PM.`;
       } else {
