@@ -100,3 +100,14 @@ These keys are not a shared database and are not protected from browser-side ins
 
 ### Implementation note
 A safe migration must preserve existing local browser data before any change to storage initialization or reset behavior. Do not run `localStorage.clear()` or any destructive migration against the live site during remediation.
+
+
+## Database candidate review — no resource created
+
+As of 2026-11-06, Neon documents a $0 Free tier with 1 GB PostgreSQL storage per project, 100 compute-hours per project per month, 5 GB public network transfer per project per month, and compute suspension after 5 minutes of inactivity. If compute-hours or network transfer are exhausted, the project is suspended until the next monthly period; writes that exceed the storage cap fail. These limits make it a plausible zero-cost development/pilot candidate, not a guaranteed always-on production database.
+
+Decision:
+- Neon PostgreSQL is the leading technical candidate because this application is an Express/Node app and its business records are relational.
+- Do not provision it or put a connection string in Render until the owner explicitly approves the account/resource setup and the free-tier limitations are accepted.
+- Before production use, verify backup/export, restore, connection pooling, TLS, and usage monitoring. A free plan with no production SLA is not a reliability guarantee.
+- No database has been created, no connection string has been requested, and no billing or hosting setting has been changed.
