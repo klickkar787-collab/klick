@@ -59,3 +59,13 @@ test('preserves ordinary phone and service replies', async () => {
   const reply = 'Call our helpline at +91 96546 10640 for a site inspection.';
   assert.equal(sanitizePublicChatReply(reply), reply);
 });
+
+
+test('also blocks bank details hidden inside the model lead-capture payload', async () => {
+  const { sanitizePublicChatReply } = await import('../src/server/chatSafety.ts');
+  const rawOutput = 'Thanks! <<<LEAD_CAPTURED:{"name":"Customer","location":"IFSC ABCD0123456"}>>>';
+  const safeOutput = sanitizePublicChatReply(rawOutput);
+  const parsed = extractLeadFromReply(safeOutput);
+  assert.match(parsed.reply, /cannot provide bank-transfer details/i);
+  assert.equal(parsed.extractedLead, null);
+});
