@@ -147,3 +147,21 @@ Decision:
 - It now resets the payments state as well, which the previous handler omitted.
 - This is a source-level remediation only. It has not yet been built or browser-tested, and it is not deployed. Do not use the reset action on production data until backup/export and restore have been verified.
 
+
+
+## Remediation progress — public chat request hardening
+
+- `server.ts` now caps parsed JSON request bodies at 16 KB.
+- `POST /api/chat` rejects non-object bodies, missing/blank messages, messages over 2,000 characters, non-array history, malformed history entries, unsupported history roles, individual history entries over 1,500 characters, and recent history text over 8,000 characters.
+- The server continues to use only the most recent eight history entries, matching the prior behavior.
+- Oversized and malformed JSON bodies now receive consistent JSON 413/400 responses.
+- The Express `X-Powered-By` response header is disabled.
+- These changes are source-level only. They have not yet passed a local TypeScript build, production build, API tests, or browser QA. They are not deployed.
+
+### Rate limiting remains open
+- Render's current guidance explains that requests pass through Cloudflare and Render load balancers and recommends application-level rate limiting using the client IP from forwarded request metadata. Express warns that forwarded headers must only be trusted when the exact proxy chain is understood and configured correctly.
+- We have not yet verified the exact client-IP value observed by this service, so no per-IP rate limiter or proxy-trust setting has been added. A wrong configuration could make every visitor share one limit or allow spoofed IP values to bypass the limit.
+- Next safe step is to validate the client-IP source in a controlled non-production environment, then add a limiter with a shared store if the service ever runs multiple instances. The current Render service has one instance, but the free instance can restart and in-memory counters would reset.
+
+### Payment disclosure still requires owner confirmation
+- The public chatbot's system prompt and fallback response include company payment details. This could be intentional customer payment guidance, so it has not been removed or changed without confirmation that the details should no longer be public.
