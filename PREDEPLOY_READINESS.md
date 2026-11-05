@@ -48,8 +48,8 @@ This checklist is intentionally conservative. A green frontend build is not proo
 
 - Source-level checks have been performed for the recent chatbot request bounds and payment-disclosure changes.
 - A GitHub Actions workflow has been added to run dependency installation, the repository's TypeScript check, and production build on the isolated security branch and on pull requests targeting main.
-- [x] Latest TypeScript check and production Vite build passed on commit `b44d00e8364050fa3d04758fb7f8073522ea4e95` (workflow run `42094383465`).
-- [x] Seven chatbot safety unit tests passed on that commit (0 failures), including IFSC, bank-account, UPI, and ordinary helpline reply cases.
+- [x] Latest TypeScript check and production Vite build passed on commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e` (workflow run `42095055106`).
+- [x] Nine chatbot safety unit tests passed on that commit (0 failures), including IFSC, bank-account, UPI, transfer-reference, lead-metadata, and ordinary helpline reply cases.
 - [x] Dependency installation reported 0 known vulnerabilities in the resolved dependency tree at that run.
 - Earlier successful build output showed the main JavaScript bundle at 952.49 kB (274.58 kB gzip), below the configured 1,000 kB warning threshold but close enough to monitor.
 - CI actions were upgraded to current Node 24-runtime major releases to remove the prior Node 20 action-runtime deprecation warning.
@@ -67,6 +67,6 @@ This checklist is intentionally conservative. A green frontend build is not proo
 ## Additional chatbot payment-disclosure guard — 2026-11-06
 
 - [x] Server-side response guard added before public chatbot replies are returned; common IFSC, labelled bank-account, NEFT/RTGS/IMPS beneficiary, and UPI patterns trigger a safe replacement response.
-- [x] Seven unit tests, TypeScript check, and production build passed on commit `b44d00e8364050fa3d04758fb7f8073522ea4e95` (workflow run `42094383465`).
+- [x] Nine unit tests, TypeScript check, and production build passed on commit `b53b5b273af9b90cfdd0bfeb099c21c24b367f0e` (workflow run `42095055106`).
 - [ ] Pattern-based output checks are not exhaustive. Test the live Gemini and fallback paths with adversarial prompts in a controlled environment before release.
 - [ ] Full browser QA and the P0 authentication, authorization, demo-data, and durable-persistence blockers remain open.
