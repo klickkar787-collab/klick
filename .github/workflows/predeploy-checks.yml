@@ -1,0 +1,39 @@
+name: Pre-deployment checks
+
+on:
+  push:
+    branches:
+      - "security-audit/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: predeploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "26.13.0"
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps --include=dev
+
+      - name: TypeScript check
+        run: npm run lint
+
+      - name: Production build
+        run: npm run build
