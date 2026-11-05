@@ -135,16 +135,37 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       const rawText = response.text || '';
       
       // Check for lead extraction
-      let extractedLead: any = null;
+      let extractedLead: Record<string, string> | null = null;
       let cleanedText = rawText;
-      const leadMatch = rawText.match(/<<<LEAD_CAPTURED:(.*?)>>>/);
-      if (leadMatch && leadMatch[1]) {
+      const leadMatch = rawText.match(/<<<LEAD_CAPTURED:([\\s\\S]*?)>>>/);
+      if (leadMatch) {
+        // Never trust model-generated lead JSON without validating its shape and size.
         try {
-          extractedLead = JSON.parse(leadMatch[1]);
-          cleanedText = rawText.replace(/<<<LEAD_CAPTURED:(.*?)>>>/, '').trim();
+          const parsedLead: unknown = JSON.parse(leadMatch[1]);
+          if (parsedLead && typeof parsedLead === 'object' && !Array.isArray(parsedLead)) {
+            const candidate = parsedLead as Record<string, unknown>;
+            const fieldLimits: Record<string, number> = {
+              name: 100,
+              phone: 32,
+              serviceRequired: 160,
+              location: 160,
+              budget: 80,
+            };
+            const safeLead: Record<string, string> = {};
+            for (const [field, maxLength] of Object.entries(fieldLimits)) {
+              const value = candidate[field];
+              if (typeof value === 'string' && value.trim()) {
+                safeLead[field] = value.trim().slice(0, maxLength);
+              }
+            }
+            if (Object.keys(safeLead).length > 0) extractedLead = safeLead;
+          }
         } catch {
-          // Ignore JSON parse error
+          // Ignore malformed model-generated lead data.
         }
+
+        // Internal lead-capture markup must never appear in the customer-facing reply.
+        cleanedText = rawText.replace(/<<<LEAD_CAPTURED:[\\s\\S]*?>>>/, '').trim();
       }
 
       return res.json({
