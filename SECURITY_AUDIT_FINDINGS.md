@@ -111,3 +111,17 @@ Decision:
 - Do not provision it or put a connection string in Render until the owner explicitly approves the account/resource setup and the free-tier limitations are accepted.
 - Before production use, verify backup/export, restore, connection pooling, TLS, and usage monitoring. A free plan with no production SLA is not a reliability guarantee.
 - No database has been created, no connection string has been requested, and no billing or hosting setting has been changed.
+
+
+## Additional verified findings — public AI endpoint and test coverage
+
+### High: public AI API can be abused
+- `POST /api/chat` is exposed without authentication or request-rate limiting in the reviewed `server.ts`.
+- When `GEMINI_API_KEY` is configured, arbitrary public requests can consume the account's AI quota/cost allowance.
+- The route validates that `message` is a string, but accepts `history` as an array and forwards item text without a complete per-item schema/length check.
+- Before enabling the AI integration for unrestricted public traffic, add conservative request/body limits, per-IP and global rate limits appropriate for Render's proxy setup, strict history/message validation, safe error handling, and usage monitoring. Preserve a graceful fallback if the AI provider is unavailable.
+
+### Medium: automated test coverage is not configured
+- The current `package.json` provides `build` and TypeScript `lint` scripts but no test script or test framework.
+- Add tests for authentication, authorization, data ownership, validation, migration/restore, and critical existing UI flows before changing the architecture.
+- A successful TypeScript build alone does not prove authentication or business workflows are secure.
