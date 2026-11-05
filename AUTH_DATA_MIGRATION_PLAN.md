@@ -100,3 +100,16 @@ The context currently exposes synchronous methods for login, registration, user 
 - No live data imported, migrated, or deleted.
 - No main-branch changes, merge, PR, or deployment.
 - No credentials or secret values included in this document.
+
+
+## 7. Portal and login UI findings verified after the initial plan
+
+- `src/components/auth/LoginModal.tsx` includes quick-fill demo credentials and displays role-specific demo password hints in the login UI. These values are part of the public client bundle and must be removed or replaced with a non-secret demo flow before production use.
+- The login form calls the synchronous `login` function directly and immediately expects a result. It must be updated to handle a pending async request, server errors, and session refresh without changing the customer/provider/admin navigation behavior.
+- `src/components/customer/CustomerPortal.tsx` loads the shared bookings, quotations, and invoices arrays into the browser and filters them by the current user's email/phone. This is presentation filtering, not data access control; all records already delivered to the browser can be inspected or altered.
+- `src/components/provider/ProviderPortal.tsx` filters the shared bookings array by a client-derived provider ID. This is also presentation filtering, not server-side assignment enforcement. A provider must receive only assigned records from the server.
+- `src/App.tsx` routes between portals using client-side `activeNav` and `role`. These checks must remain for navigation/UI only; every protected API must independently authorize the server session.
+- `src/components/admin/AdminDashboard.tsx` creates users by passing a plaintext password to `addUser`. This must become an admin-authorized server request with server-side hashing and no password echo.
+- The Admin Dashboard header renders bank-account information from the browser settings object. Before treating this site as public production software, confirm which payment details are intentionally public. Any credential-like integration token must never be rendered or stored there.
+
+Implementation implication: the migration must change the data-delivery boundary, not merely replace the login form. Customer and provider APIs should return only records authorized for that session; the browser must never download the full shared dataset and rely on filtering to hide other people's information.
