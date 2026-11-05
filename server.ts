@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
-import { extractLeadFromReply } from './src/server/chatSafety.ts';
+import { extractLeadFromReply, sanitizePublicChatReply } from './src/server/chatSafety.ts';
 
 dotenv.config();
 
@@ -137,9 +137,10 @@ app.post('/api/chat', async (req: Request, res: Response) => {
       
       // Check for lead extraction
       const { reply: cleanedText, extractedLead } = extractLeadFromReply(rawText);
+      const safeReply = sanitizePublicChatReply(cleanedText);
 
       return res.json({
-        reply: cleanedText,
+        reply: safeReply,
         extractedLead,
       });
     } else {
