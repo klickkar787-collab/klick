@@ -125,3 +125,17 @@ Decision:
 - The current `package.json` provides `build` and TypeScript `lint` scripts but no test script or test framework.
 - Add tests for authentication, authorization, data ownership, validation, migration/restore, and critical existing UI flows before changing the architecture.
 - A successful TypeScript build alone does not prove authentication or business workflows are secure.
+
+## Configuration review — ADMIN_PASSWORD_HASH
+
+- The branch's tracked `.env.example` currently documents `GEMINI_API_KEY`, `TELEGRAM_BOT_TOKEN`, and `APP_URL`; it does not document `ADMIN_PASSWORD_HASH`.
+- The reviewed branch's `server.ts` does not read or validate `ADMIN_PASSWORD_HASH` and does not currently implement an admin-authentication endpoint.
+- Therefore, a duplicate `ADMIN_PASSWORD_HASH` entry cannot be meaningfully checked against this branch's current server implementation.
+- The actual local `.env` file is not available for inspection in this connected repository view. Do not paste or upload its contents. If a local duplicate check is still needed for another version of the project, inspect only the variable names/count locally and keep all values private.
+
+## Additional finding — public AI prompt contains payment details
+
+- The current `server.ts` embeds company, statutory, contact, and bank-transfer information in the AI system prompt; the no-Gemini fallback also includes bank-transfer details in a response triggered by tax/invoice keywords.
+- This means public chatbot users can receive payment instructions directly from the chatbot. Confirm that this is an intentional, approved public disclosure and that the destination details are current before retaining this behavior.
+- Do not change or remove payment information blindly: first confirm the intended customer payment flow, then keep any approved payment instructions in a controlled server-side source and test the chatbot response. Never place credentials or private account access data in the client bundle.
+
