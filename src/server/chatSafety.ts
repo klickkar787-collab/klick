@@ -59,7 +59,9 @@ export function sanitizePublicChatReply(reply: string): string {
     /\bIFSC\b\s*(?:code)?\s*[:#-]?\s*[A-Z]{4}0[A-Z0-9]{6}\b/i,
     /\b(?:bank\s*)?(?:account|a\/c)\s*(?:number|no\.?|#)?\s*[:#-]?\s*[0-9][0-9\s-]{7,20}\b/i,
     /\b(?:NEFT|RTGS|IMPS)\b.{0,80}\b(?:account|a\/c|IFSC|beneficiary)\b/i,
-    /\b[\w.-]{2,}@(?:okaxis|okhdfcbank|oksbi|okicici|ybl|ibl|paytm|upi|apl|axl)\b/i,
+    /\b(?:NEFT|RTGS|IMPS)\b.{0,80}\b\d[\d\s-]{7,20}\b/i,
+    /\b(?:UPI|VPA)\s*(?:ID|address)?\s*[:#-]?\s*[A-Z0-9._-]{2,}@[A-Z0-9.-]{2,}\b/i,
+    /\b[\w.-]{2,}@(okaxis|okhdfcbank|oksbi|okicici|ybl|ibl|paytm|upi|apl|axl|hdfcbank|sbi|icici|axisbank|kotak|okbizaxis|okbizicici|fbl|yesbank|barodampay|freecharge|airtel|jio|slice)\b/i,
     /\b(?:beneficiary|bank transfer details|payment credentials)\b.{0,100}\b(?:\d{8,}|IFSC|UPI)\b/i,
   ];
 
