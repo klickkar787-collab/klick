@@ -73,17 +73,25 @@ export const AIChatbotWidget: React.FC = () => {
     setMessages(newMessages);
     setLoading(true);
 
+    // Match the API's limits: at most 8 history entries, 1,500 chars each,
+    // and 8,000 characters total. Drop oldest context first when necessary.
+    const recentHistory = newMessages.slice(0, -1).slice(-8).map((m) => ({
+      role: m.role,
+      text: m.text.slice(0, 1500),
+    }));
+    let historyCharacters = recentHistory.reduce((total, item) => total + item.text.length, 0);
+    while (historyCharacters > 8000 && recentHistory.length > 0) {
+      const removed = recentHistory.shift();
+      if (removed) historyCharacters -= removed.text.length;
+    }
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text,
-          // Keep the request aligned with the server's bounded recent-history policy.
-          history: newMessages.slice(0, -1).slice(-8).map((m) => ({
-            role: m.role,
-            text: m.text,
-          })),
+          history: recentHistory,
         }),
       });
 
