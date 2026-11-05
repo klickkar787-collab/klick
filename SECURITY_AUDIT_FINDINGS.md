@@ -139,3 +139,11 @@ Decision:
 - This means public chatbot users can receive payment instructions directly from the chatbot. Confirm that this is an intentional, approved public disclosure and that the destination details are current before retaining this behavior.
 - Do not change or remove payment information blindly: first confirm the intended customer payment flow, then keep any approved payment instructions in a controlled server-side source and test the chatbot response. Never place credentials or private account access data in the client bundle.
 
+## Remediation progress — Reset Demo Data action
+
+- On this isolated branch, the Admin Dashboard action is now labelled `Reset Demo Data`.
+- The reset handler asks for explicit browser confirmation and warns that locally saved KlickKar records will be replaced; it advises exporting a backup first.
+- It removes only the 13 named KlickKar localStorage keys instead of calling `localStorage.clear()`, so unrelated same-origin application keys are not intentionally cleared.
+- It now resets the payments state as well, which the previous handler omitted.
+- This is a source-level remediation only. It has not yet been built or browser-tested, and it is not deployed. Do not use the reset action on production data until backup/export and restore have been verified.
+
