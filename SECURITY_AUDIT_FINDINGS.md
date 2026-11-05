@@ -158,6 +158,12 @@ Decision:
 - The Express `X-Powered-By` response header is disabled.
 - These changes are source-level only. They have not yet passed a local TypeScript build, production build, API tests, or browser QA. They are not deployed.
 
+### Chatbot frontend compatibility follow-up
+- The chat widget now sends only the most recent eight prior messages, matching the server's history window and avoiding unbounded history growth in request bodies.
+- The chat input now has a 2,000-character maximum, matching the server's message validation.
+- The widget's message role type is `user | model`, matching the server's accepted roles.
+- Source review verified both frontend limits are present. Runtime and build verification are still pending.
+
 ### Rate limiting remains open
 - Render's current guidance explains that requests pass through Cloudflare and Render load balancers and recommends application-level rate limiting using the client IP from forwarded request metadata. Express warns that forwarded headers must only be trusted when the exact proxy chain is understood and configured correctly.
 - We have not yet verified the exact client-IP value observed by this service, so no per-IP rate limiter or proxy-trust setting has been added. A wrong configuration could make every visitor share one limit or allow spoofed IP values to bypass the limit.
@@ -169,3 +175,4 @@ Decision:
 - The GST/invoice fallback no longer includes bank details. It directs customers to request verified payment instructions through the official helpline or an official itemized invoice.
 - Source review verified that the bank details are absent from the system-instruction block and the old fallback wording is absent.
 - This is a source-level change only. Build, runtime chatbot tests (including Gemini and fallback paths), and browser QA are still pending. It is not deployed.
+- Source review also found that the existing Payment Modal and GST Invoice UI read bank details from company settings and render them as part of the payment/invoice workflow. Those screens were not changed because the owner's explicit decision concerned public chatbot disclosure; changing them could alter the existing payment flow. Treat any broader removal from payment screens as a separate owner decision.
