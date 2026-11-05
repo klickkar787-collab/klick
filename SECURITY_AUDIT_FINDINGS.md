@@ -210,3 +210,12 @@ Decision:
 - Latest GitHub Actions run: `42095315646`, commit `7c26513213872455bf7e64e2017888658235de8d`; unit tests (9/9), TypeScript check, and production build all passed. npm reported 0 known vulnerabilities in the resolved dependency tree.
 - Build output on the prior successful run: Vite 8.3.6; main JavaScript bundle 952.61 kB (274.64 kB gzip), below the configured 1,000 kB warning threshold.
 - The guard is pattern-based, not a guarantee against every possible obfuscation or novel payment identifier. Runtime tests with the real model, adversarial prompts, and browser QA are still required. This change is isolated to the security branch and is not deployed.
+
+
+## Chat API integration coverage — 2026-11-06
+
+- Added `tests/chatApi.test.ts`; the test starts the Express server in production mode with the Gemini key unset, exercising the deterministic fallback path without calling an external AI service.
+- The integration test verifies safe invoice/payment fallback guidance, a direct bank-detail request, message-length rejection, invalid history-role rejection, malformed JSON handling, and oversized-body rejection.
+- Updated the test script so CI runs both chatbot safety unit tests and the HTTP API integration test.
+- Latest successful GitHub Actions run: `42095951633`, commit `61850451e1984642f91c99c508784b9e7f1601e9`. All 10 tests passed, TypeScript check passed, and production build passed.
+- The API integration test covers the fallback path only. Real Gemini model behavior, prompt-injection testing against the live API, rate limiting, authentication/RBAC, database integration, and browser QA remain outstanding.
