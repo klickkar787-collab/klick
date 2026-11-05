@@ -133,11 +133,11 @@ Decision:
 - Therefore, a duplicate `ADMIN_PASSWORD_HASH` entry cannot be meaningfully checked against this branch's current server implementation.
 - The actual local `.env` file is not available for inspection in this connected repository view. Do not paste or upload its contents. If a local duplicate check is still needed for another version of the project, inspect only the variable names/count locally and keep all values private.
 
-## Additional finding — public AI prompt contains payment details
+## Historical finding — public AI prompt contained payment details
 
-- The current `server.ts` embeds company, statutory, contact, and bank-transfer information in the AI system prompt; the no-Gemini fallback also includes bank-transfer details in a response triggered by tax/invoice keywords.
-- This means public chatbot users can receive payment instructions directly from the chatbot. Confirm that this is an intentional, approved public disclosure and that the destination details are current before retaining this behavior.
-- Do not change or remove payment information blindly: first confirm the intended customer payment flow, then keep any approved payment instructions in a controlled server-side source and test the chatbot response. Never place credentials or private account access data in the client bundle.
+- The initial audit found company, statutory, contact, and bank-transfer information in the AI system prompt, with bank-transfer details also present in the no-Gemini fallback for tax/invoice keywords.
+- The owner has since confirmed that bank-transfer details must not be disclosed by the public chatbot. The remediation and its verification are recorded in the payment-disclosure section below.
+- Never place bank-transfer details or private account access data in the client bundle. Customers should obtain verified payment instructions through the official helpline or an official itemized invoice.
 
 ## Remediation progress — Reset Demo Data action
 
