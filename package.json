@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test": "tsx --test tests/chatSafety.test.ts tests/chatApi.test.ts"
+    "test": "tsx --test tests/chatSafety.test.ts tests/chatApi.test.ts",
+    "db:migrate": "tsx scripts/migrate.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
