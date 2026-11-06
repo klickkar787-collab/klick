@@ -23,7 +23,7 @@ Status: design plus development-only database preparation. A Neon Free project a
 - `addTelegramLead`, `replyToTelegramLead`, and lead status changes update local React state; they do not persist to a server or send a Telegram message.
 - `saveAiChatSession` updates local AI sessions and may create a local lead from captured contact details.
 - `AppSettings.telegram.botToken` is part of the settings type. The entire settings object is persisted to localStorage. Do not enter or store a real bot token in browser settings/localStorage; a Telegram credential must be server-only.
-- The current server does not expose authenticated CRUD endpoints for these records and no database driver/ORM is declared in `package.json`.
+- The current server does not expose authenticated CRUD endpoints for these records. The `pg` driver and a development schema/migration runner have since been added, but the application is not yet connected to PostgreSQL.
 
 ### Existing synchronous UI contract
 The context currently exposes synchronous methods for login, registration, user management, booking creation/status, quotation operations, invoice operations, payments, leads, CMS updates, and settings. A secure server-backed implementation will require asynchronous request handling and explicit loading/error states in the UI. Replacing only `login` would leave protected business data writable from the browser.
@@ -63,7 +63,7 @@ The context currently exposes synchronous methods for login, registration, user 
 - Define ownership rules and API request/response DTOs before writing endpoints.
 - Create a local export format and verify export/import against a copy of sample data.
 - Confirm the intended production policy for seeded demo records and any customer personal data in sample data.
-- Confirm a zero-cost database option and its suspension/availability limits before provisioning. No resource is created by this plan.
+- One Neon Free project (`klickkar-dev`) and its isolated `development` branch have been explicitly approved and provisioned for development/testing only; 19 application tables have been applied and verified. No production data is imported and no live/Render connection is authorized.
 
 ### Phase B — backend foundation
 - Add database schema/migrations and server-side repositories.
@@ -95,7 +95,7 @@ The context currently exposes synchronous methods for login, registration, user 
 
 ## 6. Explicit non-actions
 
-- No database or paid service provisioned.
+- No production database provisioned and no paid service selected. The approved Neon Free development/testing project is the only provisioned database resource.
 - No Render environment variables changed.
 - No live data imported, migrated, or deleted.
 - No main-branch changes, merge, PR, or deployment.
@@ -163,3 +163,11 @@ This schema baseline was applied only to the isolated Neon `development` branch 
 - No connection string has been added to source control or chat.
 - No application runtime routes are connected to PostgreSQL yet; authentication and domain APIs remain to be implemented and tested.
 - No Render settings, production database, live data, main branch, PR, merge, or deployment changed.
+
+
+## 8. Login UI follow-up — 2026-11-06
+
+- Removed the login modal's quick-demo buttons, credential autofill helper, and visible password hints from the isolated security branch.
+- Seeded demo account records with plaintext passwords remain in `src/data/initialData.ts`, and `AppContext.login` still compares passwords in browser-side state. Registration also stores passwords in the browser-side user object. These are unresolved critical blockers.
+- Password hashing/session-token helpers and a PostgreSQL schema are groundwork only. There is not yet a PostgreSQL-backed auth router mounted in `server.ts`, and no login/registration UI is connected to a server session.
+- Do not enable production authentication or migrate real accounts until server routes, authorization, session/CSRF protections, API tests, and UI async states are complete.
