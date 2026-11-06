@@ -121,21 +121,6 @@ export const LoginModal: React.FC = () => {
     }
   };
 
-  const fillQuickCredentials = (role: 'admin' | 'provider' | 'customer') => {
-    setActiveTab(role);
-    setErrorMessage('');
-    setSuccessMessage('');
-    if (role === 'admin') {
-      setEmail('admin@klickkar.com');
-      setPassword('Admin@KlickKar2026');
-    } else if (role === 'provider') {
-      setEmail('rajesh.fab@klickkar.com');
-      setPassword('Vendor@123');
-    } else {
-      setEmail('anil.gupta@sharmaenterprises.in');
-      setPassword('Customer@123');
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
@@ -230,34 +215,6 @@ export const LoginModal: React.FC = () => {
           </button>
         </div>
 
-        {/* Demo Credentials Quick-Select Pill Bar */}
-        <div className="bg-slate-50 px-6 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between text-[11px] gap-2">
-          <span className="text-slate-500 font-semibold">Quick Demo Login:</span>
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => fillQuickCredentials('admin')}
-              className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-md font-bold hover:bg-rose-100 cursor-pointer"
-            >
-              Demo Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => fillQuickCredentials('provider')}
-              className="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-md font-bold hover:bg-amber-100 cursor-pointer"
-            >
-              Demo Vendor
-            </button>
-            <button
-              type="button"
-              onClick={() => fillQuickCredentials('customer')}
-              className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md font-bold hover:bg-blue-100 cursor-pointer"
-            >
-              Demo Customer
-            </button>
-          </div>
-        </div>
-
         {/* Form Body */}
         <div className="p-6">
           {errorMessage && (
@@ -304,9 +261,6 @@ export const LoginModal: React.FC = () => {
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                     Password
                   </label>
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    {activeTab === 'admin' ? 'Admin@KlickKar2026' : activeTab === 'provider' ? 'Vendor@123' : 'Customer@123'}
-                  </span>
                 </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
