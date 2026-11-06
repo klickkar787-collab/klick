@@ -25,7 +25,8 @@ This checklist is intentionally conservative. A green frontend build is not proo
 - [ ] Verify browser storage and API responses contain no password, hash, session secret, or integration token.
 
 ### P0 — Durable business-data persistence
-- [ ] Select and provision an approved database with a documented backup/restore path.
+- [x] Select and provision an approved Neon Free development/testing database and isolated development branch. This does not satisfy production database readiness or authorize production use.
+- [ ] Establish a production-approved database plan and documented backup/restore path.
 - [ ] Migrate users, bookings, quotations, invoices, payments, leads, providers, CMS, and settings to server-side persistence.
 - [ ] Establish a tested export, migration, rollback, and restore procedure before importing any live records.
 - [ ] Do not use browser localStorage or an in-memory server map as the production system of record.
@@ -77,3 +78,16 @@ This checklist is intentionally conservative. A green frontend build is not proo
 - [x] Added an Express HTTP integration test for the no-Gemini fallback route and request validation.
 - [x] 10 tests passed (9 chatbot safety unit tests + 1 API integration test), TypeScript check passed, and production build passed on commit `61850451e1984642f91c99c508784b9e7f1601e9` (workflow run `42095951633`).
 - [ ] Real Gemini calls, hostile prompt tests, full browser QA, auth/RBAC, durable persistence, and production backup/restore remain unverified.
+
+
+## Neon development preparation — 2026-11-06
+
+- [x] Neon Free project `klickkar-dev` created after explicit owner approval.
+- [x] Separate `development` branch created; default `production` branch was not changed.
+- [x] Initial 18-table schema applied and verified on the development branch only.
+- [x] Added `pg` / `@types/pg`, optional pool module, versioned migration runner, and local setup guide on this isolated GitHub branch.
+- [x] Added scrypt password hashing and high-entropy session-token hash primitives with unit tests.
+- [ ] Application auth/session routes and protected CRUD APIs are not yet connected to PostgreSQL.
+- [ ] Local development connection string has not been configured; no secret was committed or shared in chat.
+- [ ] CI validation for the newest database/auth changes is pending; do not infer success from earlier CI runs.
+- [ ] No production data import, Render configuration, PR, merge, or deployment has occurred.
