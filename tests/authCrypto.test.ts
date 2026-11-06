@@ -6,7 +6,7 @@ test('password hashes verify without storing plaintext', async () => {
   const password = 'KlickKar-Test-Password-2026!';
   const hash = await hashPassword(password);
   assert.notEqual(hash, password);
-  assert.match(hash, /^scrypt\\$16384\\$8\\$1\\$/);
+  assert.equal(hash.startsWith('scrypt$16384$8$1$'), true);
   assert.equal(await verifyPassword(password, hash), true);
   assert.equal(await verifyPassword('incorrect-password', hash), false);
 });
