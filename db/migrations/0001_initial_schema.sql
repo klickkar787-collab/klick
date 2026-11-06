@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS app_settings (
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
--- Integration secrets intentionally have no table in this schema; keep them in server secret storage.
+-- Integration secrets intentionally have no table in this schema. Keep them in server secret storage.
 
 CREATE TABLE IF NOT EXISTS audit_log (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
