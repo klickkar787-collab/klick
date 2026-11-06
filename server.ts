@@ -4,6 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import { extractLeadFromReply, sanitizePublicChatReply } from './src/server/chatSafety.ts';
+import { pool } from './src/server/db.ts';
+import { createAuthRouter } from './src/server/authRoutes.ts';
 
 dotenv.config();
 
@@ -16,6 +18,7 @@ const port = parseInt(process.env.PORT || '3000', 10);
 
 // Bound incoming JSON before parsing to limit oversized public API requests.
 app.use(express.json({ limit: '16kb' }));
+app.use('/api/auth', createAuthRouter(pool));
 
 const apiKey = process.env.GEMINI_API_KEY;
 let aiClient: GoogleGenAI | null = null;
