@@ -2,7 +2,7 @@
 
 Date: 2026-11-06
 Branch: `security-audit/2026-11-06`
-Status: analysis/design only — no runtime migration or database resource created.
+Status: design plus development-only database preparation. A Neon Free project and isolated `development` branch have been created; the initial schema is applied and verified there. The application is not connected and no production data is present.
 
 ## 1. Current implementation verified on this branch
 
@@ -115,9 +115,9 @@ The context currently exposes synchronous methods for login, registration, user 
 Implementation implication: the migration must change the data-delivery boundary, not merely replace the login form. Customer and provider APIs should return only records authorized for that session; the browser must never download the full shared dataset and rely on filtering to hide other people's information.
 
 
-## 8. Provider-neutral PostgreSQL preparation (not applied)
+## 8. PostgreSQL schema baseline (applied to isolated Neon development branch)
 
-This is a design baseline for the approved development/testing preparation only. It does not create a database, connect to Neon, apply a migration, or authorize production use.
+This schema baseline was applied only to the isolated Neon `development` branch for development/testing. It does not authorize production use.
 
 ### Proposed relational domains
 
@@ -149,3 +149,17 @@ This is a design baseline for the approved development/testing preparation only.
 - [ ] After approval, keep the connection string in the provider's secret manager only; never paste it into chat or commit it.
 - [ ] Validate schema/migrations against a disposable test database before any live-data migration.
 - [ ] Production database choice, backup/restore policy, and production configuration remain unapproved and out of scope.
+
+
+## 9. Development database implementation status
+
+- Neon Free project `klickkar-dev` created after explicit owner approval.
+- Isolated Neon `development` branch created; default `production` branch remains unchanged.
+- Initial PostgreSQL schema applied and verified in the development branch.
+- PostgreSQL client dependencies `pg` and `@types/pg` added on the isolated GitHub security branch.
+- Added optional connection pool module at `src/server/db.ts`.
+- Added transactional, advisory-lock-protected migration runner at `scripts/migrate.ts`, invoked by `npm run db:migrate`.
+- Added `NEON_DEVELOPMENT_SETUP.md` with local secret configuration steps.
+- No connection string has been added to source control or chat.
+- No application runtime routes are connected to PostgreSQL yet; authentication and domain APIs remain to be implemented and tested.
+- No Render settings, production database, live data, main branch, PR, merge, or deployment changed.
