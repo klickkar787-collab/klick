@@ -84,7 +84,7 @@ This checklist is intentionally conservative. A green frontend build is not proo
 
 - [x] Neon Free project `klickkar-dev` created after explicit owner approval.
 - [x] Separate `development` branch created; default `production` branch was not changed.
-- [x] Initial 18-table schema applied and verified on the development branch only.
+- [x] Initial 19-table schema applied and verified on the development branch only.
 - [x] Added `pg` / `@types/pg`, optional pool module, versioned migration runner, and local setup guide on this isolated GitHub branch.
 - [x] Added scrypt password hashing and high-entropy session-token hash primitives with unit tests.
 - [ ] Application auth/session routes and protected CRUD APIs are not yet connected to PostgreSQL.
