@@ -102,15 +102,18 @@ These keys are not a shared database and are not protected from browser-side ins
 A safe migration must preserve existing local browser data before any change to storage initialization or reset behavior. Do not run `localStorage.clear()` or any destructive migration against the live site during remediation.
 
 
-## Database candidate review — no resource created
+## Neon development database — provisioned, not connected to the app
 
-As of 2026-11-06, Neon documents a $0 Free tier with 1 GB PostgreSQL storage per project, 100 compute-hours per project per month, 5 GB public network transfer per project per month, and compute suspension after 5 minutes of inactivity. If compute-hours or network transfer are exhausted, the project is suspended until the next monthly period; writes that exceed the storage cap fail. These limits make it a plausible zero-cost development/pilot candidate, not a guaranteed always-on production database.
+The owner explicitly approved one Neon Free project for KlickKar development/testing only. The project `klickkar-dev` and its isolated `development` branch were created; the PostgreSQL schema was applied and 19 application tables were verified on that branch. No production records were imported, the default Neon branch was not modified, and neither Render nor the live website is connected.
 
-Decision:
-- Neon PostgreSQL is the leading technical candidate because this application is an Express/Node app and its business records are relational.
-- Do not provision it or put a connection string in Render until the owner explicitly approves the account/resource setup and the free-tier limitations are accepted.
-- Before production use, verify backup/export, restore, connection pooling, TLS, and usage monitoring. A free plan with no production SLA is not a reliability guarantee.
-- No database has been created, no connection string has been requested, and no billing or hosting setting has been changed.
+The Free tier is a zero-cost development candidate with usage limits and no production reliability guarantee. Compute can scale to zero, and quota exhaustion can suspend compute or block writes. Treat it as development/testing only.
+
+Safety boundary:
+- Do not connect the Render production service or live website to this database.
+- Do not change the Neon default branch or use it for production records.
+- Keep connection strings in the local ignored `.env` only; never paste them into chat or commit them.
+- The local application connection and migration-runner verification have not yet been completed.
+- Before any production use, obtain separate approval for the database plan, backup/restore policy, connection settings, monitoring, and migration/cutover procedure.
 
 
 ## Additional verified findings — public AI endpoint and test coverage
@@ -219,3 +222,10 @@ Decision:
 - Updated the test script so CI runs both chatbot safety unit tests and the HTTP API integration test.
 - Latest successful GitHub Actions run: `42095951633`, commit `61850451e1984642f91c99c508784b9e7f1601e9`. All 10 tests passed, TypeScript check passed, and production build passed.
 - The API integration test covers the fallback path only. Real Gemini model behavior, prompt-injection testing against the live API, rate limiting, authentication/RBAC, database integration, and browser QA remain outstanding.
+
+
+## Login UI quick-demo removal — 2026-11-06
+
+- The visible quick-demo login buttons, credential autofill helper, and password hint text were removed from `src/components/auth/LoginModal.tsx` on this isolated branch.
+- This does not remove the seeded plaintext credentials from `src/data/initialData.ts` or fix browser-side password comparison in `AppContext.tsx`. Those remain critical production blockers until the authentication/data migration is implemented and tested.
+- The current branch has database schema and password/session crypto groundwork, but no PostgreSQL-backed authentication routes mounted in `server.ts`; do not describe the login system as server-authenticated yet.
