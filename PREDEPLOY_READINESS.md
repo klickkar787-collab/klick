@@ -91,3 +91,12 @@ This checklist is intentionally conservative. A green frontend build is not proo
 - [ ] Local development connection string has not been configured; no secret was committed or shared in chat.
 - [ ] CI validation for the newest database/auth changes is pending; do not infer success from earlier CI runs.
 - [ ] No production data import, Render configuration, PR, merge, or deployment has occurred.
+
+
+## Login UI follow-up — 2026-11-06
+
+- [x] Removed the login modal's visible quick-demo buttons, password hints, and credential auto-fill helper from the isolated security branch.
+- [ ] This is only a partial mitigation: `src/data/initialData.ts` still ships seeded user records with plaintext demo passwords, and `AppContext.login` still compares passwords in browser-side state. Registration and user records also remain localStorage-backed.
+- [ ] Do not mark the P0 demo-credential finding complete until seeded credentials and sample personal records are removed from production bundles and authentication is replaced with server-side verification.
+- [ ] The current branch does not yet contain a mounted PostgreSQL-backed authentication router; the database/auth groundwork is not a functioning secure login system.
+- [ ] Re-run CI and browser QA after this change. No result for this latest commit has been verified yet.
